@@ -6,17 +6,17 @@ A small collection of Tampermonkey userscripts.
 
 | Script | Pages | Purpose |
 | --- | --- | --- |
-| [Curator Enhanced Filter](userscripts/Curator%20Enhanced%20Filter-1.6.user.js) | Steam curator accepted games admin page | Adds status filters, reviewer filters, and accept/review date sorting. |
-| [Steam Review Edit-tools](userscripts/Steam%20Review%20Edit-tools-0.11.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
+| [Curator Enhanced Filter](userscripts/curator-enhanced-filter-1.7.user.js) | Steam curator accepted games admin page | Adds status filters, reviewer filters, and accept/review date sorting. |
+| [Steam Review Edit-tools](userscripts/steam-review-edit-tools-0.11.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
 | [SteamDB Table Exporter](userscripts/steamdb-table-export.user.js) | SteamDB search and sales pages | Exports the visible table from the currently opened SteamDB page as CSV or JSON. |
 
 ## Installation
 
 Install a userscript manager such as Tampermonkey, then open one of the raw script URLs:
 
-- [Curator Enhanced Filter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/Curator%20Enhanced%20Filter-1.6.user.js)
-- [Steam Curator Review Visitor](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/Steam%20Curator%20Review%20Visitor-2.1.user.js)
-- [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/Steam%20Review%20Edit-tools-0.11.user.js)
+- [Curator Enhanced Filter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/curator-enhanced-filter-1.7.user.js)
+- [Steam Curator Review Visitor](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-curator-review-visitor-2.1.user.js)
+- [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-review-edit-tools-0.11.user.js)
 - [SteamDB Table Exporter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steamdb-table-export.user.js)
 
 ## Curator Enhanced Filter
@@ -69,3 +69,4 @@ The script is configuration-driven. Add a new entry to `PAGE_CONFIGS` for anothe
 - `prepareRow`: optional async hook, useful for lazy fields such as sale time titles
 
 This script only exports the table from the page currently open in your browser. It does not crawl SteamDB or automate bulk page fetching.
+
