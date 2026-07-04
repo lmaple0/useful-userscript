@@ -95,25 +95,36 @@
   }
 
   if (location.hostname === 'store.steampowered.com' && location.pathname.startsWith('/app/')) {
-    initStoreApp();
+    window.setTimeout(initStoreApp, 500);
   }
 
   function initStoreApp() {
+    if (window.__sgtciStoreInitialized) {
+      return;
+    }
+    window.__sgtciStoreInitialized = true;
+
     const appid = getAppIdFromPath(location.pathname);
     const releaseRow = document.querySelector('.release_date');
     if (!appid || !releaseRow || releaseRow.children.length < 2) {
       return;
     }
 
-    const cardRow = releaseRow.cloneNode(true);
-    cardRow.className = 'sgtci-store-row';
+    const container = releaseRow.parentNode;
+    const cardRow = findStoreCardRows(container)[0] || releaseRow.cloneNode(true);
+    cardRow.className = 'card_info_row sgtci-store-row';
     cardRow.children[0].textContent = '卡牌信息:';
     cardRow.children[1].className = 'summary column';
     cardRow.children[1].textContent = '';
 
     const link = document.createElement('a');
+    link.className = 'sgtci-store-link';
     cardRow.children[1].appendChild(link);
-    releaseRow.parentNode.appendChild(cardRow);
+    if (!cardRow.parentNode) {
+      container.appendChild(cardRow);
+    }
+    removeDuplicateStoreRows(container, cardRow);
+    watchStoreRows(container, cardRow);
 
     getCardInfo(appid, link).catch((error) => {
       renderStatus(link, '解析结果出错', 'error');
@@ -121,6 +132,31 @@
       appendRetry(link, appid, {});
       console.error('[Steam Get Trading Card Info]', error);
     });
+  }
+
+  function findStoreCardRows(container) {
+    if (!container) {
+      return [];
+    }
+
+    return Array.from(container.children).filter((row) => {
+      const label = row.children?.[0]?.textContent?.replace(/\s+/g, '').trim();
+      return /^卡牌信息[:：]?$/.test(label || '');
+    });
+  }
+
+  function removeDuplicateStoreRows(container, keepRow) {
+    findStoreCardRows(container).forEach((row) => {
+      if (row !== keepRow) {
+        row.remove();
+      }
+    });
+  }
+
+  function watchStoreRows(container, keepRow) {
+    const observer = new MutationObserver(() => removeDuplicateStoreRows(container, keepRow));
+    observer.observe(container, { childList: true });
+    window.setTimeout(() => observer.disconnect(), 10000);
   }
 
   function initSteamDB() {
@@ -734,7 +770,5 @@
     return priceWithoutFee;
   }
 })();
-
-
 
 
