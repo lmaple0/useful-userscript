@@ -7,6 +7,7 @@ A small collection of Tampermonkey userscripts.
 | Script | Pages | Purpose |
 | --- | --- | --- |
 | [Curator Enhanced Filter](userscripts/curator-enhanced-filter-1.7.user.js) | Steam curator accepted games admin page | Adds status filters, reviewer filters, and accept/review date sorting. |
+| [Steam Get Trading Card Info](userscripts/steam-get-trading-card-info.user.js) | Steam store app pages and SteamDB sales pages | Fetches Steam trading card counts, average prices, and estimated card income. |
 | [Steam Review Edit-tools](userscripts/steam-review-edit-tools-0.11.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
 | [SteamDB Table Exporter](userscripts/steamdb-table-export.user.js) | SteamDB search and sales pages | Exports the visible table from the currently opened SteamDB page as CSV or JSON. |
 
@@ -15,6 +16,7 @@ A small collection of Tampermonkey userscripts.
 Install a userscript manager such as Tampermonkey, then open one of the raw script URLs:
 
 - [Curator Enhanced Filter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/curator-enhanced-filter-1.7.user.js)
+- [Steam Get Trading Card Info](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-get-trading-card-info.user.js)
 - [Steam Curator Review Visitor](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-curator-review-visitor-2.1.user.js)
 - [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-review-edit-tools-0.11.user.js)
 - [SteamDB Table Exporter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steamdb-table-export.user.js)
@@ -50,6 +52,22 @@ Main features:
 - Inserts a fixed 3x3 table template.
 - Preview button for rendered review markup.
 - Markdown to BBCode converter for common Markdown syntax.
+
+## Steam Get Trading Card Info
+
+`steam-get-trading-card-info.user.js` fetches trading card information from the Steam Community Market.
+
+Supported pages:
+
+- `https://store.steampowered.com/app/*`
+- `https://steamdb.info/sales/*`
+
+Main features:
+
+- Shows card count, average card price, and estimated after-fee card income on Steam store app pages.
+- Adds SteamDB sales table columns for card income, average price, and card count.
+- Supports retry, pause/resume, median price, ignore highest price, and pure income display when SteamDB and Steam wallet countries match.
+- Uses direct userscript APIs without a jQuery CDN dependency.
 
 ## SteamDB Table Exporter
 
