@@ -90,7 +90,7 @@
   `);
 
   if (location.hostname === 'steamdb.info' && location.pathname.startsWith('/sales/')) {
-    initSteamDB();
+    window.setTimeout(initSteamDB, 500);
     return;
   }
 
@@ -159,12 +159,92 @@
     window.setTimeout(() => observer.disconnect(), 10000);
   }
 
+  function removeSteamDBArtifacts(table) {
+    document.querySelectorAll('.sgtci-panel, .sgtci-filter-button, #sgtci-login-info').forEach((node) => node.remove());
+    if (table) {
+      table.querySelectorAll('thead > tr > .sgtci-card-income-head, thead > tr > .sgtci-card-avgprice-head, thead > tr > .sgtci-card-count-head').forEach((node) => node.remove());
+    }
+    document.querySelectorAll('#DataTables_Table_0 > tbody .sgtci-card-income, #DataTables_Table_0 > tbody .sgtci-card-avgprice, #DataTables_Table_0 > tbody .sgtci-card-count').forEach((node) => node.remove());
+  }
+  function cleanupSteamDBDuplicates(table) {
+    keepFirstElement('.sgtci-panel');
+    keepFirstElement('.sgtci-filter-button');
+    keepFirstElement('#sgtci-login-info');
+    cleanupSteamDBHeaders(table);
+    cleanupSteamDBResultCells();
+  }
+
+  function watchSteamDBDuplicates(table, panel, filterButton, loginInfo) {
+    const observer = new MutationObserver(() => {
+      if (!panel.isConnected) {
+        observer.disconnect();
+        return;
+      }
+
+      keepElement('.sgtci-panel', panel);
+      keepElement('.sgtci-filter-button', filterButton);
+      keepElement('#sgtci-login-info', loginInfo);
+      cleanupSteamDBHeaders(table);
+      cleanupSteamDBResultCells();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.setTimeout(() => observer.disconnect(), 10000);
+  }
+
+  function keepFirstElement(selector) {
+    const first = document.querySelector(selector);
+    keepElement(selector, first);
+  }
+
+  function keepElement(selector, keepNode) {
+    document.querySelectorAll(selector).forEach((node) => {
+      if (keepNode && node !== keepNode) {
+        node.remove();
+      }
+    });
+  }
+
+  function cleanupSteamDBHeaders(table) {
+    if (!table) {
+      return;
+    }
+
+    ['.sgtci-card-income-head', '.sgtci-card-avgprice-head', '.sgtci-card-count-head'].forEach((selector) => {
+      const headers = table.querySelectorAll(`thead > tr > ${selector}`);
+      headers.forEach((header, index) => {
+        if (index > 0) {
+          header.remove();
+        }
+      });
+    });
+  }
+
+  function cleanupSteamDBResultCells() {
+    getRows().forEach((row) => {
+      ['.sgtci-card-income', '.sgtci-card-avgprice', '.sgtci-card-count'].forEach((selector) => {
+        const cells = row.querySelectorAll(selector);
+        cells.forEach((cell, index) => {
+          if (index > 0) {
+            cell.remove();
+          }
+        });
+      });
+    });
+  }
   function initSteamDB() {
     const table = document.querySelector('#DataTables_Table_0');
     const filters = document.querySelector('div.filters-container');
     if (!table || !filters) {
       return;
     }
+
+    if (window.__sgtciSteamDBInitialized) {
+      cleanupSteamDBDuplicates(table);
+      return;
+    }
+    window.__sgtciSteamDBInitialized = true;
+    removeSteamDBArtifacts(table);
 
     if (location.hash === '#setFilter') {
       const discountHeader = document.querySelector('#DataTables_Table_0 > thead > tr > th:nth-child(5)');
@@ -231,6 +311,7 @@
 
     const filterButton = createButton('一键设置卡牌条件', setFilter);
     filterButton.href = '#setFilter';
+    filterButton.classList.add('sgtci-filter-button');
     const filterHost = document.querySelector('#js-filters');
     if (filterHost) {
       filterHost.appendChild(filterButton);
@@ -264,6 +345,7 @@
       });
     }
 
+    watchSteamDBDuplicates(table, panel, filterButton, loginInfo);
     checkLoginStatus();
 
     function startSteamDBQuery({ mode }) {
@@ -482,15 +564,26 @@
 
   function ensureHeaders(table) {
     const headerRow = table.querySelector('thead > tr');
-    if (!headerRow || headerRow.querySelector('.sgtci-card-income-head')) {
+    if (!headerRow) {
       return;
     }
 
-    [
+    cleanupSteamDBHeaders(table);
+
+    const headerConfig = [
       ['sgtci-card-income-head', 'CardIncome', 0],
       ['sgtci-card-avgprice-head', 'AvgPrice', 1],
       ['sgtci-card-count-head', 'Count', 2],
-    ].forEach(([className, label, column]) => {
+    ];
+    if (headerConfig.every(([className]) => headerRow.querySelector(`.${className}`))) {
+      return;
+    }
+
+    headerConfig.forEach(([className]) => {
+      headerRow.querySelectorAll(`.${className}`).forEach((header) => header.remove());
+    });
+
+    headerConfig.forEach(([className, label, column]) => {
       const header = document.createElement('th');
       header.className = `sorting ${className}`;
       header.textContent = label;
@@ -500,19 +593,11 @@
   }
 
   function ensureResultCells(row) {
-    let income = row.querySelector('.sgtci-card-income');
-    let avg = row.querySelector('.sgtci-card-avgprice');
-    let count = row.querySelector('.sgtci-card-count');
+    cleanupRowResultCells(row);
 
-    if (!income) {
-      income = document.createElement('td');
-      income.className = 'sgtci-card-income';
-      avg = document.createElement('td');
-      avg.className = 'sgtci-card-avgprice';
-      count = document.createElement('td');
-      count.className = 'sgtci-card-count';
-      row.append(income, avg, count);
-    }
+    const income = row.querySelector('.sgtci-card-income') || appendResultCell(row, 'sgtci-card-income');
+    const avg = row.querySelector('.sgtci-card-avgprice') || appendResultCell(row, 'sgtci-card-avgprice');
+    const count = row.querySelector('.sgtci-card-count') || appendResultCell(row, 'sgtci-card-count');
 
     const link = income.querySelector('a') || document.createElement('a');
     if (!link.parentNode) {
@@ -520,6 +605,24 @@
     }
 
     return { income, avg, count, link };
+  }
+
+  function appendResultCell(row, className) {
+    const cell = document.createElement('td');
+    cell.className = className;
+    row.appendChild(cell);
+    return cell;
+  }
+
+  function cleanupRowResultCells(row) {
+    ['.sgtci-card-income', '.sgtci-card-avgprice', '.sgtci-card-count'].forEach((selector) => {
+      const cells = row.querySelectorAll(selector);
+      cells.forEach((cell, index) => {
+        if (index > 0) {
+          cell.remove();
+        }
+      });
+    });
   }
 
   function resetResultCells(cells) {
@@ -770,5 +873,4 @@
     return priceWithoutFee;
   }
 })();
-
 
