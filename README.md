@@ -8,7 +8,7 @@ A small collection of Tampermonkey userscripts.
 | --- | --- | --- |
 | [Curator Enhanced Filter](userscripts/curator-enhanced-filter-1.7.user.js) | Steam curator accepted games admin page | Adds status filters, reviewer filters, and accept/review date sorting. |
 | [Steam Get Trading Card Info](userscripts/steam-get-trading-card-info.user.js) | Steam store app pages and SteamDB sales pages | Fetches Steam trading card counts, average prices, and estimated card income. |
-| [Steam Review Edit-tools](userscripts/steam-review-edit-tools-0.11.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
+| [Steam Review Edit-tools](userscripts/steam-review-edit-tools-0.12.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
 | [SteamDB Table Exporter](userscripts/steamdb-table-export.user.js) | SteamDB search and sales pages | Exports the visible table from the currently opened SteamDB page as CSV or JSON. |
 
 ## Installation
@@ -18,7 +18,7 @@ Install a userscript manager such as Tampermonkey, then open one of the raw scri
 - [Curator Enhanced Filter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/curator-enhanced-filter-1.7.user.js)
 - [Steam Get Trading Card Info](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-get-trading-card-info.user.js)
 - [Steam Curator Review Visitor](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-curator-review-visitor-2.1.user.js)
-- [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-review-edit-tools-0.11.user.js)
+- [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-review-edit-tools-0.12.user.js)
 - [SteamDB Table Exporter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steamdb-table-export.user.js)
 
 ## Curator Enhanced Filter

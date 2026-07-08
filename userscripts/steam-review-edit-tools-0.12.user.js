@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Steam Review Edit-tools
-// @version      0.11
+// @version      0.12
 // @description  Minimal BBCode toolbar for Steam review editor: B/I/U/S, link, list, quote, code, table, headings, preview, MD→BBCode.
 // @author       sffxzzp / Maple with Claude
 // @match        *://store.steampowered.com/app/*
@@ -32,36 +32,42 @@
         });
     }
 
-    // ---------- 样式（Steam 原生蓝灰，单段 ~30 行） ----------
+    // ---------- 样式（Steam 原生深蓝灰工具条） ----------
     GM_addStyle([
-        '.sre-bar{display:flex;flex-wrap:wrap;gap:2px;padding:4px 6px;margin:0 0 8px;background:#2a3f5a;border:1px solid #000;border-radius:2px;box-shadow:1px 1px 0 0 rgba(91,132,181,.15) inset;font:13px/1 "Motiva Sans",Arial,sans-serif}',
-        '.sre-btn{display:inline-flex;align-items:center;gap:4px;height:28px;min-width:28px;padding:0 10px;color:#8f98a0;background:transparent;border:0;border-radius:2px;cursor:pointer;text-decoration:none!important;font:500 13px/1 inherit;user-select:none;transition:background-color .12s,color .12s}',
-        '.sre-btn:hover{background:#67c1f5;color:#171a21}',
-        '.sre-btn svg{width:15px;height:15px}',
-        '.sre-btn b,.sre-btn i,.sre-btn u,.sre-btn s{font-style:normal;font-weight:700;font-size:14px;display:inline-block;width:15px;text-align:center}',
+        '.sre-bar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:7px 8px;margin:0 0 10px;background:linear-gradient(180deg,#263a4d 0%,#1b2b3a 48%,#152432 100%);border:1px solid #000;border-top-color:#3b5368;border-radius:3px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 1px 3px rgba(0,0,0,.35);font:13px/1 "Motiva Sans",Arial,sans-serif}',
+        '.sre-bar:before{content:"BBCode";align-self:stretch;display:inline-flex;align-items:center;margin:0 5px 0 1px;padding:0 8px;color:#66c0f4;background:rgba(0,0,0,.18);border:1px solid rgba(103,193,245,.14);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}',
+        '.sre-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:29px;min-width:30px;padding:0 10px;color:#c7d5e0;background:linear-gradient(180deg,rgba(103,193,245,.10),rgba(103,193,245,.035));border:1px solid rgba(103,193,245,.18);border-radius:2px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 1px 0 rgba(0,0,0,.3);cursor:pointer;text-decoration:none!important;font:600 13px/1 inherit;user-select:none;transition:background .14s,border-color .14s,color .14s,box-shadow .14s,transform .08s}',
+        '.sre-btn:hover{color:#fff;background:linear-gradient(180deg,#67c1f5 0%,#417a9b 100%);border-color:#8ed1ff;box-shadow:0 0 0 1px rgba(103,193,245,.18),0 0 10px rgba(103,193,245,.22)}',
+        '.sre-btn:active{transform:translateY(1px);box-shadow:0 1px 2px rgba(0,0,0,.45) inset}',
+        '.sre-btn:focus-visible{outline:1px solid #8ed1ff;outline-offset:2px}',
+        '.sre-btn svg{width:15px;height:15px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.35))}',
+        '.sre-btn b,.sre-btn i,.sre-btn u,.sre-btn s{font-style:normal;font-weight:800;font-size:14px;display:inline-block;width:15px;text-align:center}',
         '.sre-btn i{font-style:italic;font-family:Georgia,serif}',
         '.sre-btn u{text-decoration:underline}',
         '.sre-btn s{text-decoration:line-through}',
-        '.sre-btn--accent{background:#67c1f5;color:#fff}',
-        '.sre-btn--accent:hover{background:#8ed1ff;color:#fff}',
+        '.sre-btn--accent{color:#fff;background:linear-gradient(180deg,#8bc53f 0%,#5c7e10 100%);border-color:#a4d348;text-shadow:0 1px 0 rgba(0,0,0,.45)}',
+        '.sre-btn--accent:hover{background:linear-gradient(180deg,#a4d348 0%,#6d9218 100%);border-color:#c7ec6b;color:#fff;box-shadow:0 0 12px rgba(164,211,72,.28)}',
+        '.sre-sep{width:1px;height:22px;margin:0 3px;background:linear-gradient(180deg,transparent,rgba(103,193,245,.24),transparent);box-shadow:1px 0 0 rgba(0,0,0,.35)}',
         '.sre-spacer{flex:1}',
-        '#preview_body{padding:14px 16px;background:rgba(0,0,0,.2);border:1px solid #000;border-radius:2px;box-shadow:1px 1px 0 0 rgba(91,132,181,.2) inset;line-height:1.6;color:#8f98a0;margin-bottom:8px;font-family:"Motiva Sans",Arial,sans-serif}',
+        '#preview_body[hidden]{display:none!important}',
+        '#preview_body{position:relative;padding:34px 16px 14px;background:linear-gradient(180deg,rgba(27,40,56,.96),rgba(15,25,35,.96));border:1px solid #000;border-top-color:#3b5368;border-radius:3px;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 1px 3px rgba(0,0,0,.35);line-height:1.6;color:#c7d5e0;margin-bottom:10px;font-family:"Motiva Sans",Arial,sans-serif}',
+        '#preview_body:before{content:"预览";position:absolute;left:0;right:0;top:0;height:24px;padding:0 12px;display:flex;align-items:center;color:#66c0f4;background:linear-gradient(90deg,rgba(103,193,245,.16),rgba(103,193,245,0));border-bottom:1px solid rgba(103,193,245,.14);font-size:12px;font-weight:700}',
         '#preview_body .bb_ul>li,#preview_body ol{list-style-position:inside}',
-        '#preview_body table{border-collapse:collapse;margin:8px 0;border:1px solid #000;border-radius:2px;overflow:hidden}',
-        '#preview_body table td,#preview_body table th{border-bottom:1px solid #000;border-right:1px solid #000;padding:6px 12px;color:#8f98a0}',
-        '#preview_body table th{background:#3d5a80;color:#c6d4df;font-weight:600;text-align:left}',
+        '#preview_body table{border-collapse:collapse;margin:10px 0;border:1px solid #000;border-radius:2px;overflow:hidden;background:rgba(0,0,0,.18)}',
+        '#preview_body table td,#preview_body table th{border-bottom:1px solid rgba(0,0,0,.75);border-right:1px solid rgba(0,0,0,.75);padding:7px 12px;color:#c7d5e0}',
+        '#preview_body table th{background:linear-gradient(180deg,#334b63,#263a4d);color:#66c0f4;font-weight:700;text-align:left}',
         '#preview_body table tr:last-child td{border-bottom:0}',
         '#preview_body table td:last-child,#preview_body table th:last-child{border-right:0}',
-        '#preview_body blockquote{border-left:2px solid #67c1f5;margin:8px 0;padding:6px 14px;background:rgba(0,0,0,.15);color:#8f98a0}',
-        '#preview_body .bb_code,#preview_body code,#preview_body pre{background:rgba(0,0,0,.25);border:1px solid #000;border-radius:2px;padding:8px 12px;color:#9fdfb1;font:12.5px/1.6 Consolas,monospace;white-space:pre;box-shadow:1px 1px 0 0 rgba(91,132,181,.2) inset}',
+        '#preview_body blockquote{border-left:3px solid #67c1f5;margin:10px 0;padding:8px 14px;background:rgba(103,193,245,.07);color:#acb8c2}',
+        '#preview_body .bb_code,#preview_body code,#preview_body pre{background:rgba(0,0,0,.28);border:1px solid #000;border-top-color:#30465c;border-radius:2px;padding:9px 12px;color:#9fdfb1;font:12.5px/1.6 Consolas,monospace;white-space:pre;box-shadow:1px 1px 0 0 rgba(91,132,181,.18) inset}',
         '.widestore #review_create .content,.widestore .review_controls,.widestore .review_controls_subctn{display:block}',
         '.widestore #review_create .input_box{width:100%!important}',
         /* MD 转换 modal */
-        '.sre-mask{position:fixed;inset:0;background:rgba(11,16,22,.75);display:flex;align-items:center;justify-content:center;z-index:99999}',
-        '.sre-modal{background:#223345;border:1px solid #000;border-radius:3px;padding:18px 20px;min-width:420px;max-width:560px;color:#c6d4df;font:13px/1.5 "Motiva Sans",Arial,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.5)}',
-        '.sre-modal h3{margin:0 0 12px;font-size:14px;font-weight:600;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}',
-        '.sre-modal textarea{width:100%;box-sizing:border-box;background:rgba(0,0,0,.2);color:#c6d4df;border:1px solid #000;border-radius:2px;padding:10px 12px;font:13px/1.55 Consolas,monospace;resize:vertical;outline:none;box-shadow:1px 1px 0 0 rgba(91,132,181,.2) inset}',
-        '.sre-modal textarea:focus{border-color:#67c1f5}',
+        '.sre-mask{position:fixed;inset:0;background:rgba(11,16,22,.78);display:flex;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(2px)}',
+        '.sre-modal{background:linear-gradient(180deg,#24384a,#162532);border:1px solid #000;border-top-color:#3b5368;border-radius:3px;padding:18px 20px;min-width:420px;max-width:560px;color:#c7d5e0;font:13px/1.5 "Motiva Sans",Arial,sans-serif;box-shadow:0 14px 36px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.06) inset}',
+        '.sre-modal h3{margin:0 0 12px;font-size:14px;font-weight:700;color:#66c0f4;padding-bottom:9px;border-bottom:1px solid rgba(103,193,245,.16)}',
+        '.sre-modal textarea{width:100%;box-sizing:border-box;background:#0e1a24;color:#c7d5e0;border:1px solid #000;border-top-color:#30465c;border-radius:2px;padding:10px 12px;font:13px/1.55 Consolas,monospace;resize:vertical;outline:none;box-shadow:1px 1px 0 0 rgba(91,132,181,.16) inset}',
+        '.sre-modal textarea:focus{border-color:#67c1f5;box-shadow:0 0 0 1px rgba(103,193,245,.28),1px 1px 0 0 rgba(91,132,181,.16) inset}',
         '.sre-modal .actions{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}'
     ].join(''));
 
@@ -178,6 +184,12 @@
         table: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M2 6h12M2 10h12M6 2v12M10 2v12"/></svg>'
     };
 
+    function sep() {
+        var s = document.createElement('span');
+        s.className = 'sre-sep';
+        return s;
+    }
+
     function btn(html, title, onClick, accent) {
         var b = document.createElement('button');
         b.className = 'sre-btn' + (accent ? ' sre-btn--accent' : '');
@@ -206,6 +218,7 @@
         var preview = document.createElement('div');
         preview.id = 'preview_body';
         preview.className = 'body_text';
+        preview.hidden = true;
         target.insertBefore(preview, ctlAnchor);
 
         var bar = document.createElement('div');
@@ -216,15 +229,18 @@
         bar.appendChild(btn('<i>I</i>',  '斜体 [i]',     function () { wrap(input, '[i]', '[/i]'); }));
         bar.appendChild(btn('<u>U</u>',  '下划线 [u]',   function () { wrap(input, '[u]', '[/u]'); }));
         bar.appendChild(btn('<s>S</s>',  '删除线 [strike]', function () { wrap(input, '[strike]', '[/strike]'); }));
+        bar.appendChild(sep());
         bar.appendChild(btn(ICON.link,   '链接 [url]',   function () { insertLink(input); }));
         bar.appendChild(btn(ICON.olist,  '有序列表',     function () { wrapList(input, '[olist]', '[/olist]', '[*] '); }));
         bar.appendChild(btn(ICON.list,   '无序列表',     function () { wrapList(input, '[list]',  '[/list]',  '[*] '); }));
         bar.appendChild(btn(ICON.quote,  '引用 [quote]', function () { wrap(input, '[quote=作者]', '[/quote]'); }));
         bar.appendChild(btn(ICON.code,   '代码 [code]',  function () { wrap(input, '[code]', '[/code]'); }));
         bar.appendChild(btn(ICON.table,  '插入 3×3 表格', function () { insertTable(input); }));
+        bar.appendChild(sep());
         bar.appendChild(btn('H<sub>1</sub>', '一级标题', function () { wrap(input, '[h1]', '[/h1]'); }));
         bar.appendChild(btn('H<sub>2</sub>', '二级标题', function () { wrap(input, '[h2]', '[/h2]'); }));
         bar.appendChild(btn('H<sub>3</sub>', '三级标题', function () { wrap(input, '[h3]', '[/h3]'); }));
+        bar.appendChild(sep());
         bar.appendChild(btn('帮助', '格式帮助', function () {
             window.open('https://steamcommunity.com/comment/Recommendation/formattinghelp', 'fmt', 'height=640,width=640,resize=yes,scrollbars=yes');
         }));
@@ -238,7 +254,9 @@
             if (prevBtn._loading) return;
             prevBtn._loading = true;
             var orig = prevBtn.innerHTML;
-            prevBtn.textContent = '加载中…';
+            preview.hidden = false;
+            preview.textContent = '正在载入预览...';
+            prevBtn.textContent = '加载中...';
             try {
                 var sid = localStorage.getItem('sre_sessionID');
                 var data = await xhr({
@@ -248,7 +266,7 @@
                     data: 'sessionID=' + sid + '&action=preview&headline=&body=' + encodeURIComponent(input.value),
                     headers: { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' }
                 });
-                preview.innerHTML = (data && data.body) || '';
+                preview.innerHTML = (data && data.body) || '<span style="color:#8f98a0">没有可预览的内容</span>';
             } catch (e) {
                 preview.innerHTML = '<span style="color:#ff6c7c">预览失败</span>';
             } finally {
@@ -284,3 +302,5 @@
 
     run();
 })();
+
+
