@@ -10,6 +10,7 @@ A small collection of Tampermonkey userscripts.
 | [Steam Get Trading Card Info](userscripts/steam-get-trading-card-info.user.js) | Steam store app pages and SteamDB sales pages | Fetches Steam trading card counts, average prices, and estimated card income. |
 | [Steam Review Edit-tools](userscripts/steam-review-edit-tools-0.12.user.js) | Steam review editor pages | Adds a compact BBCode toolbar, preview, table insertion, and Markdown to BBCode conversion. |
 | [SteamDB Table Exporter](userscripts/steamdb-table-export.user.js) | SteamDB search and sales pages | Exports the visible table from the currently opened SteamDB page as CSV or JSON. |
+| [Steam Guard Authenticator](userscripts/steam-guard-authenticator.user.js) | Steam store, help, checkout, and community pages | Generates Steam Guard codes, fills login challenges, and handles mobile confirmations. |
 
 ## Installation
 
@@ -20,6 +21,21 @@ Install a userscript manager such as Tampermonkey, then open one of the raw scri
 - [Steam Curator Review Visitor](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-curator-review-visitor-2.1.user.js)
 - [Steam Review Edit-tools](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-review-edit-tools-0.12.user.js)
 - [SteamDB Table Exporter](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steamdb-table-export.user.js)
+- [Steam Guard Authenticator](https://raw.githubusercontent.com/lmaple0/useful-userscript/main/userscripts/steam-guard-authenticator.user.js)
+
+## Steam Guard Authenticator
+
+`steam-guard-authenticator.user.js` is a lightweight, dependency-free Steam Guard helper.
+
+Main features:
+
+- Generates five-character Steam Guard codes with Steam server-time calibration.
+- Automatically fills supported Steam two-factor login forms.
+- Adds, imports, and removes multiple accounts through the Steam interface.
+- Lists and filters trade or market confirmations and supports batch allow/cancel actions.
+- Synchronizes account changes across userscript tabs.
+
+Account secrets are stored as ordinary userscript-manager values. The script intentionally does not include encryption or account export features. Use it only on a trusted device with a trusted userscript manager.
 
 ## Curator Enhanced Filter
 
@@ -87,4 +103,3 @@ The script is configuration-driven. Add a new entry to `PAGE_CONFIGS` for anothe
 - `prepareRow`: optional async hook, useful for lazy fields such as sale time titles
 
 This script only exports the table from the page currently open in your browser. It does not crawl SteamDB or automate bulk page fetching.
-
