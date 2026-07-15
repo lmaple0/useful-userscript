@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Steam 令牌验证器（轻量版）
 // @namespace    https://github.com/lmaple0/useful-userscript
-// @version      1.0.0
+// @version      1.0.1
 // @description  轻量 Steam Guard TOTP + 批量交易/市场确认。无第三方依赖，支持多账号与批量导入
 // @author       lmaple0
 // @license      MIT
@@ -757,12 +757,14 @@
     }
 
     async function sendMultiConfirm(acc, op, modal, $scope) {
-        if (op !== 'allow' && op !== 'cancel') return;
+        // Steam 的 HTTP 操作名与确认密钥签名标签不同。
+        const signingTag = op === 'allow' ? 'accept' : op === 'cancel' ? 'reject' : null;
+        if (!signingTag) return;
         const $checked = $scope.find('.mobileconf_list_checkbox input:checked');
         if (!$checked.length) return;
         const wait = ShowBlockingWaitDialog('确认交易与市场', '执行中…');
         try {
-            const qsBase = await generateConfirmationQueryParams(acc, op);
+            const qsBase = await generateConfirmationQueryParams(acc, signingTag);
             let body = 'op=' + op + '&' + qsBase;
             $checked.each(function () {
                 const $t = $J(this);
